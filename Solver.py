@@ -166,6 +166,8 @@ if __name__ == "__main__":
             # checked = 0
             checked1 = find_one(grid)
             checked2 = find_be_one(grid)
+            print('\n\n')
+            print_map(grid)
             if checked1 + checked2 == 0:
                 if numbers(grid) == 81:
                     print('done!')
@@ -191,15 +193,13 @@ if __name__ == "__main__":
                                 stack.append(b)
                                 break
                         if not returnFlag:
-                            print('branch')
+                            input('branch')
                             break
                     if returnFlag:
-                        print('back')
+                        input('back')
                         if len(stack) == 0:
                             print('fail')
                             break
                         grid = stack.pop()
             else:
-                print('\n\n')
-                print_map(grid)
-            input("checked: " + str(checked1) + ' ' + str(checked2))
+                input("checked: " + str(checked1) + ' ' + str(checked2))
