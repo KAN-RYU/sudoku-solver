@@ -57,8 +57,6 @@ def find_one(grid):
             if grid[i][j]['mark'].count(True) == 1 and grid[i][j]['number'] == '.':
                 grid[i][j]['number'] = grid[i][j]['mark'].index(True, 1)
                 grid[i][j]['check'] = True
-                if i == 4 and j == 4:
-                    print(1)
                 initial_mark(grid)
                 checked += 1
     return checked
@@ -80,9 +78,6 @@ def find_be_one(grid):
                     if grid[i][c]['mark'][l] == True and grid[i][c]['number'] == '.':
                         grid[i][c]['number'] = l
                         grid[i][c]['check'] = True
-                        if i == 4 and c == 4:
-                            print(count)
-                            print(2)
                         initial_mark(grid)
                         checked += 1
                         break
@@ -105,8 +100,6 @@ def find_be_one(grid):
                     if grid[r][j]['mark'][l] == True and grid[r][j]['number'] == '.':
                         grid[r][j]['number'] = l
                         grid[r][j]['check'] = True
-                        if r == 4 and j == 4:
-                            print(3)
                         initial_mark(grid)
                         checked += 1
                         break
@@ -132,8 +125,6 @@ def find_be_one(grid):
                             if grid[i * 3 + r][j * 3 + c]['mark'][l] == True and grid[i * 3 + r][j * 3 + c]['number'] == '.':
                                 grid[i * 3 + r][j * 3 + c]['number'] = l
                                 grid[i * 3 + r][j * 3 + c]['check'] = True
-                                if i * 3 + r == 4 and j * 3 + c == 4:
-                                    print(1)
                                 initial_mark(grid)
                                 checked += 1
                                 break
