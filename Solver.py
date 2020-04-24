@@ -39,6 +39,14 @@ def initial_mark():
                     for b in range(3):
                         grid[a + offset_r][b + offset_c]['mark'][grid[i][j]['number']] = False
 
+def find_one():
+    global grid
+    for i in range(9):
+        for j in range(9):
+            if grid[i][j]['mark'].count(True) == 2 and grid[i][j]['number'] == '.':
+                grid[i][j]['number'] = grid[i][j]['mark'].index(True, 1)
+                grid[i][j]['check'] = True
+
 if __name__ == "__main__":
     with open('./from.txt', mode = 'r') as f:
         line = f.readlines()
