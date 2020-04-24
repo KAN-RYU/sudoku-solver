@@ -1,11 +1,19 @@
-import sys
+import copy
 
-grid = []
 # ─ │ ┌ ┐ ┘ └ ├ ┬ ┤ ┴ ┼
 #\033[93m yellow
 #\033[0m white
 #\033[94m blue
-def print_map():
+#\033[91m red
+def numbers(grid):
+    count = 0
+    for i in range(9):
+        for j in range(9):
+            if grid[i][j]['number'] is not '.':
+                count += 1
+    return count
+
+def print_map(grid):
     print("\033[0m┌───┬───┬───┐")
     for i in range(9):
         if i % 3 == 0 and i > 0:
@@ -17,6 +25,9 @@ def print_map():
             elif grid[i][j]['check'] == True:
                 grid[i][j]['check'] = False
                 current_line += '\033[93m' + str(grid[i][j]['number']) + '\033[0m'
+            elif grid[i][j]['branch'] == True:
+                grid[i][j]['branch'] = False
+                current_line += '\033[91m' + str(grid[i][j]['number']) + '\033[0m'
             else:
                 current_line += '\033[94m' + str(grid[i][j]['number']) + '\033[0m'
             if j % 3 == 2:
@@ -24,8 +35,7 @@ def print_map():
         print(current_line)
     print("└───┴───┴───┘")
 
-def initial_mark():
-    global grid
+def initial_mark(grid):
     for i in range(9):
         for j in range(9):
             grid[i][j]['mark'][0] = False
@@ -40,8 +50,7 @@ def initial_mark():
                     for b in range(3):
                         grid[a + offset_r][b + offset_c]['mark'][grid[i][j]['number']] = False
 
-def find_one():
-    global grid
+def find_one(grid):
     checked = 0
     for i in range(9):
         for j in range(9):
@@ -50,12 +59,11 @@ def find_one():
                 grid[i][j]['check'] = True
                 if i == 4 and j == 4:
                     print(1)
-                initial_mark()
+                initial_mark(grid)
                 checked += 1
     return checked
 
-def find_be_one(): 
-    global grid
+def find_be_one(grid): 
     checked = 0
     #row
     for i in range(9):
@@ -75,7 +83,7 @@ def find_be_one():
                         if i == 4 and c == 4:
                             print(count)
                             print(2)
-                        initial_mark()
+                        initial_mark(grid)
                         checked += 1
                         break
                 offset = l + 1
@@ -99,7 +107,7 @@ def find_be_one():
                         grid[r][j]['check'] = True
                         if r == 4 and j == 4:
                             print(3)
-                        initial_mark()
+                        initial_mark(grid)
                         checked += 1
                         break
                 offset = l + 1
@@ -126,7 +134,7 @@ def find_be_one():
                                 grid[i * 3 + r][j * 3 + c]['check'] = True
                                 if i * 3 + r == 4 and j * 3 + c == 4:
                                     print(1)
-                                initial_mark()
+                                initial_mark(grid)
                                 checked += 1
                                 break
                     offset = l + 1
@@ -136,6 +144,8 @@ def find_be_one():
 
 if __name__ == "__main__":
     with open('./from.txt', mode = 'r') as f:
+        stack = []
+        grid = []
         line = f.readlines()
         offset = 0
         for i in range(9):
@@ -147,17 +157,49 @@ if __name__ == "__main__":
                 grid[i][j] = {'number' : a[j] if a[j] is '.' else int(a[j]),
                               'mark'   : [True]*10,
                               'check'  : False,
-                              'solid'  : False if a[j] is '.' else True}
+                              'solid'  : False if a[j] is '.' else True,
+                              'branch' : False}
                 
-        print_map()
-        initial_mark()
+        print_map(grid)
+        initial_mark(grid)
         while True:
             # checked = 0
-            checked1 = find_one()
-            checked2 = find_be_one()
-            print('\n\n')
-            print_map()
+            checked1 = find_one(grid)
+            checked2 = find_be_one(grid)
             if checked1 + checked2 == 0:
-                print('done!')
-                break
+                if numbers(grid) == 81:
+                    print('done!')
+                    break
+                else:
+                    returnFlag = True
+                    for i in range(9):
+                        for j in range(9):
+                            if grid[i][j]['mark'].count(True) == 2:
+                                returnFlag = False
+                                a = copy.deepcopy(grid)
+                                l = grid[i][j]['mark'].index(True)
+                                a[i][j]['number'] = l
+                                a[i][j]['branch'] = True
+                                initial_mark(a)
+
+                                b = copy.deepcopy(grid)
+                                b[i][j]['number'] = grid[i][j]['mark'].index(True, l + 1)
+                                b[i][j]['branch'] = True
+                                initial_mark(b)
+
+                                grid = a
+                                stack.append(b)
+                                break
+                        if not returnFlag:
+                            print('branch')
+                            break
+                    if returnFlag:
+                        print('back')
+                        if len(stack) == 0:
+                            print('fail')
+                            break
+                        grid = stack.pop()
+            else:
+                print('\n\n')
+                print_map(grid)
             input("checked: " + str(checked1) + ' ' + str(checked2))
