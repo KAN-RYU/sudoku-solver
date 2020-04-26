@@ -167,7 +167,7 @@ if __name__ == "__main__":
                     returnFlag = True
                     for i in range(9):
                         for j in range(9):
-                            if grid[i][j]['mark'].count(True) == 2:
+                            if grid[i][j]['mark'].count(True) == 2 and grid[i][j]['number'] == '.':
                                 returnFlag = False
                                 a = copy.deepcopy(grid)
                                 l = grid[i][j]['mark'].index(True)
